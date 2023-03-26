@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  spam-network:
+    driver: bridge
+
+services:
+  aiserver:
+    container_name: spam-app
+    build:
+      context: ./app
+      dockerfile: dockerfile
+    restart: always
+    networks:
+      - spam-network
+    expose:
+      - "5000"
+  webserver:
+    container_name: spam-express
+    build: 
+      context: ./server
+      dockerfile: dockerfile
+    restart: always
+    depends_on:
+      - aiserver
+    networks:
+      - spam-network
+    expose:
+      - "80"
+      - "8080"
+    ports:
+      - "80:80"
+      - "8080:8080"
